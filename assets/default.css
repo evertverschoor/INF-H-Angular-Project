@@ -1,0 +1,167 @@
+@font-face{
+    font-family:'Raleway-Thin';
+    src: url('fonts/Raleway-Thin.ttf') format('truetype');
+}
+
+@font-face{
+    font-family:'Raleway-Regular';
+    src: url('fonts/Raleway-Regular.ttf') format('truetype');
+}
+
+@font-face{
+    font-family:'Raleway-Bold';
+    src: url('fonts/Raleway-Bold.ttf') format('truetype');
+}
+
+html, body {
+    margin: 0px;
+    padding: 0px;
+}
+
+body, input {
+    font-family: 'Raleway-Regular', Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
+    font-size: 14px;
+}
+
+h1, h2, h3, h4, h5, h6, h7 {
+    font-weight: normal;
+    font-family: 'Raleway-Thin';
+    text-align: center;
+}
+
+a {
+    text-decoration: none;
+}
+
+thead {
+    font-weight: normal;
+    font-family: 'Raleway-Bold';
+}
+
+#AppNavigation {
+    display: inline-block;
+    position: relative;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 48px;
+    background-color: #da1b16;
+}
+
+#Logo {
+    position: relative;
+    float: left;
+    max-height: 100%;
+    width: auto;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+#AppContent {
+    padding: 10px;
+    width: calc(100% - 20px);
+}
+
+#Footer {
+    position: relative;
+    text-align: center;
+    margin: 10px;
+    width: calc(100% - 20px);
+    border-top: 1px solid #dedede;
+}
+
+#FooterGraphic {
+    max-height: 64px;
+    width: auto;
+}
+
+.textInput, .button {
+    padding: 5px;
+    width: calc(100% - 12px);
+    margin-bottom: 5px;
+}
+
+.button {
+    border: none;
+    background-color: #da1b16;
+    color: #FFF;
+    cursor: pointer;
+    width: 100%;
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+
+.navigationButton {
+    position: relative;
+    float: left;
+    height: 100%;
+    min-width: 100px;
+    width: initial;
+    border: none;
+    background: none;
+    color: #FFF;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.navigationButton:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.productImage {
+    max-height: 64px;
+    width: auto;
+}
+
+.productModifier {
+    background: none;
+    border: none;
+    font-size: 200%;
+    padding: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    border-radius: 20px;
+}
+
+.productModifier:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.inventoryTable {
+    width: 100%;
+}
+
+.inventoryTableImage {
+    width: 20%;
+}
+
+.inventoryTableName {
+    width: 50%;
+}
+
+.inventoryTableQuantity {
+    width: 15%;
+}
+
+.inventoryTableModifiers {
+    width: 15%;
+    min-width: 68px;
+}
+
+@media screen and (min-width: 768px) {
+    #AppContent, #Footer {
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #AppContent .button {
+        max-width: 300px;
+        margin-left: calc(50% - 150px);
+    }
+
+    #AppContent .textInput {
+        max-width: 288px;
+        margin-left: calc(50% - 150px);
+    }
+}

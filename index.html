@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Inventory</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <link href="assets/default.css" rel="stylesheet" />
+</head>
+<body data-ng-app="inventory">
+  <div id="AppNavigation">
+    <a href="#!inventory">
+      <img id="Logo" src="assets/icon_transparent_128.png" />
+    </a>
+    <a href="#!inventory">
+      <input type="button" value="Inventory" class="navigationButton"/>
+    </a>
+    <a href="#!login">
+      <input type="button" value="Login" class="navigationButton"/>
+    </a>
+  </div>
+  <div id="AppContent" data-ng-view=""></div>
+  <div id="Footer">
+    <img id="FooterGraphic" src="assets/icon_coloured_128.png" />
+  </div>
+
+  <script src="libs/angular.js"></script>
+  <script src="libs/angular-route.js"></script>
+  <script src="libs/angular-utils.js"></script>
+  <script src="scripts/default.js"></script>
+</body>
+</html>
