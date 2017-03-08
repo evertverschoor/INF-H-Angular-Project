@@ -159,7 +159,7 @@ app.service('UIService', function(AuthenticationService) {
         Goes to a given page.
     */
     this.goTo = function(where) {
-        window.location = "!#!/" + where;
+        window.location = "#!/" + where;
     }
 
     /*
