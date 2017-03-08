@@ -20,13 +20,21 @@ html, body {
 
 body, input {
     font-family: 'Raleway-Regular', Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
-    font-size: 14px;
+    font-size: 16px;
+}
+
+input {
+    outline: none;
 }
 
 h1, h2, h3, h4, h5, h6, h7 {
     font-weight: normal;
     font-family: 'Raleway-Thin';
     text-align: center;
+}
+
+h3 {
+    font-family: 'Raleway-Bold';
 }
 
 a {
@@ -38,9 +46,13 @@ thead {
     font-family: 'Raleway-Bold';
 }
 
+p {
+    text-align: center;
+}
+
 #AppNavigation {
     display: inline-block;
-    position: relative;
+    position: fixed;
     top: 0px;
     left: 0px;
     width: 100%;
@@ -58,6 +70,7 @@ thead {
 }
 
 #AppContent {
+    margin-top: 48px;
     padding: 10px;
     width: calc(100% - 20px);
 }
@@ -75,13 +88,13 @@ thead {
     width: auto;
 }
 
-.textInput, .button {
+.textInput, .button, .button-alternative {
     padding: 5px;
     width: calc(100% - 12px);
     margin-bottom: 5px;
 }
 
-.button {
+.button, .button-alternative {
     border: none;
     background-color: #da1b16;
     color: #FFF;
@@ -89,6 +102,22 @@ thead {
     width: 100%;
     padding-top: 6px;
     padding-bottom: 6px;
+}
+
+.button:hover {
+    background-color: #222;
+}
+
+.button-alternative {
+    background-color: #FFF;
+    border: 1px solid #dedede;
+    color: #222;
+}
+
+.button-alternative:hover {
+    background-color: #222;
+    border-color: #222;
+    color: #FFF;
 }
 
 .navigationButton {
@@ -110,6 +139,8 @@ thead {
 
 .productImage {
     max-height: 64px;
+    max-width: 64px;
+    height: auto;
     width: auto;
 }
 
@@ -141,11 +172,45 @@ thead {
 
 .inventoryTableQuantity {
     width: 15%;
+    font-size: 130%;
 }
 
 .inventoryTableModifiers {
     width: 15%;
     min-width: 68px;
+}
+
+.ngUtilsMessage {
+    position: fixed;
+    bottom: 0px;
+    padding: 10px;
+    width: calc(100% - 20px);
+    color: #da1b16;
+    background-color: #FFF;
+    text-align: center;
+    font-family: 'Raleway-Bold';
+    border-top: 1px solid #dedede;
+    pointer-events: none;
+    animation-name: fade-in-and-flash;
+    animation-duration: 2s;
+}
+
+.inventory, .inventory-bottom {
+    margin-top: 50px;
+    margin-bottom: 100px;
+}
+
+.inventory-bottom {
+    margin-bottom: 0px;
+}
+
+@keyframes fade-in-and-flash {
+    0% { opacity: 0; color: #da1b16; }
+    20% { opacity: 1; color: #da1b16; }
+    40% { opacity: 1; color: #da1b16; }
+    50% { opacity: 1; color: #FFF; }
+    60% { opacity: 1; color: #da1b16; }
+    100% { opacity: 1; color: #da1b16; }
 }
 
 @media screen and (min-width: 768px) {
@@ -155,7 +220,7 @@ thead {
         margin-right: auto;
     }
 
-    #AppContent .button {
+    #AppContent .button, #AppContent .button-alternative {
         max-width: 300px;
         margin-left: calc(50% - 150px);
     }
@@ -163,5 +228,9 @@ thead {
     #AppContent .textInput {
         max-width: 288px;
         margin-left: calc(50% - 150px);
+    }
+
+    .ngUtilsMessage {
+        font-size: 130%;
     }
 }

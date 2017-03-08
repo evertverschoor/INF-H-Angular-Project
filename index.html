@@ -11,15 +11,21 @@
   <script src="libs/angular-utils.js"></script>
 </head>
 <body data-ng-app="inventory">
-  <div id="AppNavigation">
+  <div id="AppNavigation" data-ng-controller="navigationController">
     <a href="#!inventory">
       <img id="Logo" src="assets/icon_transparent_128.png" />
     </a>
-    <a href="#!inventory">
+    <a href="#!inventory" id="InventoryButton">
       <input type="button" value="Inventory" class="navigationButton"/>
     </a>
-    <a href="#!login">
+    <a href="#!login" id="LoginButton">
       <input type="button" value="Login" class="navigationButton"/>
+    </a>
+    <a href="#!register" id="RegisterButton">
+      <input type="button" value="Register" class="navigationButton"/>
+    </a>
+    <a id="LogoutButton" style="display: none;">
+      <input type="button" value="Logout" class="navigationButton" data-ng-click="logOut()"/>
     </a>
   </div>
   <div id="AppContent" data-ng-view=""></div>

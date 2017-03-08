@@ -1,4 +1,6 @@
 <h1>Login</h1>
-<input type="text" class="textInput" data-ng-model="username" placeholder="Username" autofocus/>
-<input type="password" class="textInput" data-ng-model="password" placeholder="Password" />
-<input type="button" class="button" value="Login" data-ng-click="login()" />
+<form data-ng-submit="login()">
+    <input type="text" class="textInput" data-ng-model="username" placeholder="E-mail" data-ng-autofocus/>
+    <input type="password" class="textInput" data-ng-model="password" placeholder="Password" />
+    <input type="submit" class="button" value="Login"/>
+</form>
