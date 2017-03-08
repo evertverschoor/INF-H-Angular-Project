@@ -1,9 +1,9 @@
 <h1>Inventory</h1>
 <table class="inventoryTable">
     <tbody>
-        <tr data-ng-repeat="product in products">
+        <tr data-ng-repeat="product in inventory.products">
             <td class="inventoryTableImage">
-                <img src="{{product.image}}" class="productImage" />
+                <img data-ng-src="{{product.image}}" class="productImage" />
             </td>
             <td class="inventoryTableName">{{product.name}}</td>
             <td class="inventoryTableQuantity">{{product.quantity}}</td>
