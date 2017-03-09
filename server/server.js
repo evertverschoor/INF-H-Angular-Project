@@ -8,7 +8,7 @@ var Inventory = function() {
     /*
         Handles action calls.
     */
-    this.handleRequest = function(request, response) {
+    this.handleRequest = function(request, response, callback) {
         let result = {
             isAction: true,
             status: 200,
@@ -21,24 +21,27 @@ var Inventory = function() {
                 params = {};
             }
 
-            result.response = controller[this.getAction(request.url)](params);
+            let action = this.getAction(request.url);
+            controller[this.getAction(request.url)](params, function(controllerResult) {
+                if(typeof controllerResult.data == "string") {
+                    result.response = controllerResult.data;
+                } else {
+                    result.response = JSON.stringify(controllerResult.data);
+                }
+                
+                result.status = controllerResult.statusCode;
+
+                console.log("-----------------------");
+                console.log("Got request for action: " + action);
+                console.log("-----------------------");
+
+                callback(result);
+            });
         } catch(ex) {
-            console.log("ACTION EX: " + ex);
             result.isAction = false;
             result.status = 500;
+            callback(result);
         }
-        /*switch(this.getAction(request.url)) {
-            case "authenticate":
-                result.response = "Authenticate called!";
-                let params = this.getParams(request.url);
-                break;
-            default:
-                result.isAction = false;
-                result.status = 500;
-                break;
-        }*/
-
-        return result;
     }
 
     /*

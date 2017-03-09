@@ -65,7 +65,7 @@ app.service('InventoryService', function() {
 // ---------------------- //
 // Authentication Service //
 // ---------------------- //
-app.service('AuthenticationService', function() {
+app.service('AuthenticationService', function($http) {
     /* 
         Returns the Session ID from the local storage.
     */
@@ -85,15 +85,22 @@ app.service('AuthenticationService', function() {
     */
     this.isAuthenticated = function() {
         let sessionID = this.getSessionID();
-        return sessionID != null && sessionID != "";;
+        return sessionID != null && sessionID != "";
     }
 
     /*
         Authenticates a user with the given username and password.
     */
-    this.authenticate = function(username, password) {
-        localStorage.setItem('SessionID', 7362367);
-        return { status: true, message: "Login successful." };
+    this.authenticate = function(username, password, callback) {
+        $http({
+            method: 'GET',
+            url: '/authenticate?username=' + username + '&password=' + password,
+        }).then(function(response) {
+            localStorage.setItem('SessionID', response.data);
+            callback({ status: true, message: "Login successful." });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
     }
 
     /*
@@ -106,15 +113,25 @@ app.service('AuthenticationService', function() {
 
     /*
         Registers a new user.
+        Returns:
+        {
+            status: bool,
+            message: string
+        }
     */
-    this.register = function(username, password, confirmPassword) {
-        console.log("PW: " + password);
-        console.log("CPW: " + confirmPassword);
-
+    this.register = function(username, password, confirmPassword, callback) {
         if(password == confirmPassword) {
-            return this.authenticate(username, password);
+            $http({
+                method: 'GET',
+                url: '/register?username=' + username + '&password=' + password,
+            }).then(function(response) {
+                localStorage.setItem('SessionID', response.data);
+                callback({ status: true, message: "Registration successful." });
+            }, function(response) {
+                callback({ status: false, message: response.data });
+            });
         } else {
-            return { status: false, message: "Your passwords do not match." };
+           callback({ status: false, message: "Your passwords do not match." });
         }
     }
 });

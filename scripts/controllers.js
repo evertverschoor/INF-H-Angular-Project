@@ -43,13 +43,14 @@ app.controller('loginController', function($scope, AuthenticationService, UIServ
     $scope.password = "";
 
     $scope.login = function() {
-        let result = AuthenticationService.authenticate($scope.username, $scope.password);
-        if(result.status) {
-            UIService.goTo("inventory");
-            UIService.refreshNavigationBar();
-        }
+        AuthenticationService.authenticate($scope.username, $scope.password, function(result) {
+            if(result.status) {
+                UIService.goTo("inventory");
+                UIService.refreshNavigationBar();
+            }
 
-        UIService.showMessage(result.message);
+            UIService.showMessage(result.message);
+        });
     }
 
     UIService.autoFocus();
@@ -65,13 +66,14 @@ app.controller('registerController', function($scope, AuthenticationService, UIS
     $scope.confirmPassword = "";
 
     $scope.register = function() {
-        let result = AuthenticationService.register($scope.username, $scope.password, $scope.confirmPassword);
-        if(result.status) {
-            UIService.goTo("inventory");
-            UIService.refreshNavigationBar();
-        }
+        AuthenticationService.register($scope.username, $scope.password, $scope.confirmPassword, function(result) {
+            if(result.status) {
+                UIService.goTo("inventory");
+                UIService.refreshNavigationBar();
+            }
 
-        UIService.showMessage(result.message);
+            UIService.showMessage(result.message);
+        });
     }
 
     UIService.autoFocus();
