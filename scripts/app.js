@@ -14,6 +14,10 @@ app.config(function($routeProvider) {
         templateUrl: "views/register.html",
         controller: "registerController"
     })
+    .when("/account", {
+        templateUrl: "views/account.html",
+        controller: "accountController"
+    })
     .when("/newinventory", {
         templateUrl: "views/newinventory.html",
         controller: "newInventoryController"
