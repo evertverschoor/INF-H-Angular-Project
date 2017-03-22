@@ -1,11 +1,21 @@
 // ----------------- //
 // Inventory Service //
 // ----------------- //
-app.service('InventoryService', function() {
+app.service('InventoryService', function($http, AuthenticationService) {
     /*
         Returns all inventories the user has.
     */
-    this.getInventories = function() {
+    this.getInventories = function(callback) {
+        $http({
+            method: 'GET',
+            url: '/getInventories?sessionID=' + AuthenticationService.getSessionID(),
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
+
+        /*
         return [
             {
                 name: "Home fridge",
@@ -37,7 +47,7 @@ app.service('InventoryService', function() {
                     }
                 ]
             }
-        ];
+        ];*/
     }
 
     /*
@@ -50,8 +60,15 @@ app.service('InventoryService', function() {
     /*
         Adds a new inventory.
     */
-    this.addInventory = function(name) {
-        return { status: false, message: "Not yet implemented" };
+    this.addInventory = function(name, callback) {
+        $http({
+            method: 'POST',
+            url: '/addInventory?sessionID=' + AuthenticationService.getSessionID() + '&name=' + name,
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
     }
 
     /*
@@ -70,7 +87,12 @@ app.service('AuthenticationService', function($http) {
         Returns the Session ID from the local storage.
     */
     this.getSessionID = function() {
-        return localStorage.getItem('SessionID');
+        let sessionID = localStorage.getItem('SessionID');
+        if(sessionID == null || sessionID == 'null') {
+            return null;
+        } else {
+            return sessionID;
+        }
     }
 
     /*
@@ -89,11 +111,28 @@ app.service('AuthenticationService', function($http) {
     }
 
     /*
+        Makes sure if we have a session locally, that it matches the one in the server.
+    */
+    this.validateSession = function() {
+        let sessionID = this.getSessionID();
+        if(sessionID != null) {
+            $http({
+                method: 'GET',
+                url: '/validateSession?sessionID=' + sessionID,
+            }).then(function(response) {
+                localStorage.setItem('SessionID', response.data);
+            }, function(response) {
+                localStorage.setItem('SessionID', null);
+            });
+        }
+    }
+
+    /*
         Authenticates a user with the given username and password.
     */
     this.authenticate = function(username, password, callback) {
         $http({
-            method: 'GET',
+            method: 'POST',
             url: '/authenticate?username=' + username + '&password=' + password,
         }).then(function(response) {
             localStorage.setItem('SessionID', response.data);
@@ -113,6 +152,7 @@ app.service('AuthenticationService', function($http) {
 
     /*
         Registers a new user.
+        
         Returns:
         {
             status: bool,
@@ -122,7 +162,7 @@ app.service('AuthenticationService', function($http) {
     this.register = function(username, password, confirmPassword, callback) {
         if(password == confirmPassword) {
             $http({
-                method: 'GET',
+                method: 'POST',
                 url: '/register?username=' + username + '&password=' + password,
             }).then(function(response) {
                 localStorage.setItem('SessionID', response.data);
@@ -132,6 +172,29 @@ app.service('AuthenticationService', function($http) {
             });
         } else {
            callback({ status: false, message: "Your passwords do not match." });
+        }
+    }
+});
+
+// --------------- //
+// Account Service //
+// --------------- //
+app.service('AccountService', function($http, AuthenticationService) {
+    /*
+        Changes the user's password. Checks if the new passwords match.
+    */
+    this.changePassword = function(oldPassword, newPassword, confirmNewPassword, callback) {
+        if(newPassword == confirmNewPassword) {
+            $http({
+                method: 'POST',
+                url: '/changePassword?sessionID=' + AuthenticationService.getSessionID() + '&oldPassword=' + oldPassword + '&newPassword=' + newPassword,
+            }).then(function(response) {
+                callback({ status: true, message: "Changes applied successfully." });
+            }, function(response) {
+                callback({ status: false, message: response.data });
+            });
+        } else {
+           callback({ status: false, message: "Your new passwords do not match." });
         }
     }
 });
@@ -147,10 +210,12 @@ app.service('UIService', function(AuthenticationService) {
         if(AuthenticationService.isAuthenticated()) {
             document.querySelector("#LoginButton").style.display = "none";
             document.querySelector("#RegisterButton").style.display = "none";
+            document.querySelector("#AccountButton").style.display = "";
             document.querySelector("#LogoutButton").style.display = "";
         } else {
             document.querySelector("#LoginButton").style.display = "";
             document.querySelector("#RegisterButton").style.display = "";
+            document.querySelector("#AccountButton").style.display = "none";
             document.querySelector("#LogoutButton").style.display = "none";
         }
     }

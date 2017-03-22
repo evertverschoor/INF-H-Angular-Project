@@ -1,7 +1,7 @@
 // --------------------- //
 // Navigation Controller //
 // --------------------- //
-app.controller('navigationController', function($scope, AuthenticationService, UIService) {
+app.controller('navigationController', function($scope, AuthenticationService, UIService, AuthenticationService) {
     /*
         Logs out the authenticated user.
     */
@@ -15,6 +15,7 @@ app.controller('navigationController', function($scope, AuthenticationService, U
         UIService.showMessage(result.message);
     }
 
+    AuthenticationService.validateSession();
     UIService.refreshNavigationBar();
 });
 
@@ -24,12 +25,14 @@ app.controller('navigationController', function($scope, AuthenticationService, U
 app.controller('inventoryController', function($scope, InventoryService, AuthenticationService, UIService) {
     if(AuthenticationService.isAuthenticated()) {
         $scope.empty = false;
-        $scope.inventories = InventoryService.getInventories();
-        if($scope.inventories.length < 1)  {
-            $scope.empty = true;
-        }
+        InventoryService.getInventories(function(data) {
+            $scope.inventories = data.message != "null" ? data.message : [];
+            if($scope.inventories.length < 1)  {
+                $scope.empty = true;
+            }
 
-        UIService.autoFocus();
+            UIService.autoFocus();
+        });
     } else {
         UIService.goTo("login");
     }
@@ -80,6 +83,33 @@ app.controller('registerController', function($scope, AuthenticationService, UIS
     UIService.refreshNavigationBar();
 });
 
+// ------------------ //
+// Account Controller //
+// ------------------ //
+app.controller('accountController', function($scope, AuthenticationService, UIService, AccountService) {
+    if(AuthenticationService.isAuthenticated()) {
+        $scope.oldPassword = "";
+        $scope.newPassword = "";
+        $scope.confirmNewPassword = "";
+
+        $scope.apply = function() {
+            console.log("Hiiiii!");
+            AccountService.changePassword($scope.oldPassword, $scope.newPassword, $scope.confirmNewPassword, function(result) {
+                if(result.status) {
+                    UIService.goTo("account");
+                    UIService.refreshNavigationBar();
+                }
+
+                UIService.showMessage(result.message);
+            });
+        }
+
+        UIService.autoFocus();
+    } else {
+        UIService.goTo("login");
+    }
+});
+
 // ------------------------ //
 // New Inventory Controller //
 // ------------------------ //
@@ -88,13 +118,14 @@ app.controller('newInventoryController', function($scope, AuthenticationService,
         $scope.name = "";
 
         $scope.createInventory = function() {
-            let result = InventoryService.addInventory($scope.name);
-            if(result.status) {
-                UIService.goTo("inventory");
-                UIService.refreshNavigationBar();
-            }
+            InventoryService.addInventory($scope.name, function(data) {
+                if(data.status) {
+                    UIService.goTo("inventory");
+                    UIService.refreshNavigationBar();
+                }
 
-            UIService.showMessage(result.message);
+                UIService.showMessage(data.message);
+            });
         }
 
         UIService.autoFocus();
