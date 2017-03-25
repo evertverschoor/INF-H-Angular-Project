@@ -5,14 +5,16 @@ var PrivateService = function() {
 
     this.getSession = function(sessionID) {
         let sessions = this.session;
+        let returnValue = null;
 
         for(var ses in sessions) {
             if(sessions[ses].sessionID == sessionID) {
-                return sessions[ses];
+                returnValue = sessions[ses];
+                break;
             }
         }
 
-        return null;
+        return returnValue;
     }
 
     this.readFile = function(which, callback) {
@@ -50,10 +52,11 @@ var privateService = new PrivateService();
 var Service = function() {
     this.validateSession = function(sessionID, callback) {
         let session = privateService.getSession(sessionID);
+
         if(session == null) {
-            return false;
+            callback({ status: false, data: null });
         } else {
-            return true;
+            callback({ status: true, data: sessionID });
         }
     }
 
@@ -185,50 +188,95 @@ var Service = function() {
         });
     }
 
+    /*
+        Returns all the inventories belonging to the current user.
+    */
     this.getInventories = function(sessionID, callback) {
-        callback({ status: true, data: [
-            {
-                name: "Home fridge",
-                id: 0,
-                products: [
-                    {
-                        id: 0,
-                        name: "Apple",
-                        quantity: 2,
-                        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/220px-Red_Apple.jpg"
-                    },
-                    {
-                        id: 1,
-                        name: "Pear",
-                        quantity: 5,
-                        image: "http://usapears.org/wp-content/uploads/2015/01/green-anjou-pear.jpg"
+        let session = privateService.getSession(sessionID);
+
+        if(session != null) {
+            this.getData("inventories", function(result) {
+                let inventories = [];
+
+                if(result != null && result.length > 0) {
+                    for(var inv in result) {
+                        if(result[inv].userID == session.id) {
+                            inventories[inventories.length] = result[inv];
+                        }
                     }
-                ]
-            },
-            {
-                name: "Mini fridge",
-                id: 1,
-                products: [
-                    {
-                        id: 3,
-                        name: "Banana",
-                        quantity: 4,
-                        image: "https://www.bbcgoodfood.com/sites/default/files/glossary/banana-crop.jpg"
-                    }
-                ]
-            }
-        ] });
+                }
+                
+                callback({ status: true, data: inventories });
+            });
+        } else {
+            callback({ status: false, data: "Not authenticated." });
+        }
     }
 
     /*
         Add an inventory with a name and a user's session ID.
     */
     this.addInventory = function(name, sessionID, callback) {
-        let scope = this;
+        let session = privateService.getSession(sessionID);
 
-        this.getData("inventories", function(data) {
-            // TODO: implement
-        });
+        if(session != null) {
+            this.getData("inventories", function(result) {
+                result[result.length] = {
+                    name: name,
+                    id: result.length,
+                    userID: session.id,
+                    products: []
+                }
+
+                privateService.writeFile("inventories", JSON.stringify(result), function(writtenResult) {
+                    if(writtenResult) {
+                        callback({ status: true, data: "Inventory created successfully." });
+                    } else {
+                        callback({ status: false, data: "Inventory creation failed, please try again later." });
+                    }
+                });
+            });
+        } else {
+            callback({ status: false, data: "Not authenticated." });
+        }
+    }
+
+    /*
+        Deletes an inventory with the given ID belonging to the current user.
+    */
+    this.deleteInventory = function(inventoryID, sessionID, callback) {
+        let session = privateService.getSession(sessionID);
+
+        if(session != null) {
+            this.getData("inventories", function(result) {
+                if(result != null && result.length > 0) {
+                    let match = false;
+
+                    for(var inv in result) {
+                        if(result[inv].userID == session.id && result[inv].id == inventoryID) {
+                            result.splice(inv, 1);
+                            match = true;
+                        }
+                    }
+
+                    if(match) {
+                        privateService.writeFile("inventories", JSON.stringify(result), function(writtenResult) {
+                            if(writtenResult) {
+                                callback({ status: true, data: "Inventory deleted successfully." });
+                            } else {
+                                callback({ status: false, data: "Inventory deletion failed, please try again later." });
+                            }
+                        });
+                    } else {
+                        callback({ status: false, data: "Old password is incorrect." });
+                    }
+                } else {
+                    callback({ status: false, data: "No inventories exist, cannot delete." });
+                }
+            });
+        } else {
+            callback({ status: false, data: "Not authenticated." });
+        }
     }
 
     /*

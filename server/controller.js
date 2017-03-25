@@ -2,12 +2,13 @@ var service = require("./service.js");
 
 module.exports =  {
     validateSession: function(params, callback) {
-        let result = service.validateSession(params.sessionID);
-        if(result.status) {
-            callback({ statusCode: 200, data: result.data });
-        } else {
-            callback({ statusCode: 403, data: result.data });
-        }
+        service.validateSession(params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 403, data: result.data });
+            }
+        });
     },
 
     authenticate: function(params, callback) {
@@ -63,16 +64,16 @@ module.exports =  {
             if(result.status) {
                 callback({ statusCode: 200, data: result.data });
             } else {
-                callback({ statusCode: 500, data: "Not yet implemented" });
+                callback({ statusCode: 500, data: result.data });
             }
         })
     },
 
     addInventory: function(params, callback) {
-        if(name.length < 200) {
-            callback({ statusCode: 500, data: "Inventory name can't be longer than 200 characters." });
+        if(params.name.length < 5 || params.name.length > 200) {
+            callback({ statusCode: 500, data: "Inventory name must be between 5 and 200 characters long." });
         } else {
-            service.addInventory(params.sessionID, params.name, function(result) {
+            service.addInventory(params.name, params.sessionID, function(result) {
                 if(result.status) {
                     callback({ statusCode: 200, data: result.data });
                 } else {
@@ -80,5 +81,15 @@ module.exports =  {
                 }
             })
         }
+    },
+
+    deleteInventory: function(params, callback) {
+        service.deleteInventory(params.inventoryID, params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 500, data: result.data });
+            }
+        })
     }
 }

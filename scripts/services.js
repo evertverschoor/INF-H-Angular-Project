@@ -10,51 +10,32 @@ app.service('InventoryService', function($http, AuthenticationService) {
             method: 'GET',
             url: '/getInventories?sessionID=' + AuthenticationService.getSessionID(),
         }).then(function(response) {
+            for(var inv in response.data) {
+                response.data[inv].name = decodeURIComponent(response.data[inv].name);
+            }
+
             callback({ status: true, message: response.data });
         }, function(response) {
             callback({ status: false, message: response.data });
         });
-
-        /*
-        return [
-            {
-                name: "Home fridge",
-                id: 0,
-                products: [
-                    {
-                        id: 0,
-                        name: "Apple",
-                        quantity: 2,
-                        image: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/220px-Red_Apple.jpg"
-                    },
-                    {
-                        id: 1,
-                        name: "Pear",
-                        quantity: 5,
-                        image: "http://usapears.org/wp-content/uploads/2015/01/green-anjou-pear.jpg"
-                    }
-                ]
-            },
-            {
-                name: "Mini fridge",
-                id: 1,
-                products: [
-                    {
-                        id: 3,
-                        name: "Banana",
-                        quantity: 4,
-                        image: "https://www.bbcgoodfood.com/sites/default/files/glossary/banana-crop.jpg"
-                    }
-                ]
-            }
-        ];*/
     }
 
     /*
         Returns the inventory that belongs to the given ID.
     */
-    this.getInventory = function(inventoryID) {
-        return this.getInventories()[inventoryID];
+    this.getInventory = function(inventoryID, callback) {
+        this.getInventories(function(result) {
+            if(result.status) {
+                for(var inv in result.message) {
+                    if(result.message[inv].id == inventoryID) {
+                        callback(result.message[inv]);
+                        break;
+                    }
+                }
+            } else {
+                callback(null);
+            }
+        });
     }
 
     /*
@@ -74,8 +55,15 @@ app.service('InventoryService', function($http, AuthenticationService) {
     /*
         Deletes an inventory.
     */
-    this.deleteInventory = function(inventoryID) {
-        return { status: false, message: "Not yet implemented" };
+    this.deleteInventory = function(inventoryID, callback) {
+        $http({
+            method: 'POST',
+            url: '/deleteInventory?sessionID=' + AuthenticationService.getSessionID() + '&inventoryID=' + inventoryID,
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
     }
 });
 
@@ -152,12 +140,6 @@ app.service('AuthenticationService', function($http) {
 
     /*
         Registers a new user.
-        
-        Returns:
-        {
-            status: bool,
-            message: string
-        }
     */
     this.register = function(username, password, confirmPassword, callback) {
         if(password == confirmPassword) {
