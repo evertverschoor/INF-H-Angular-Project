@@ -22,9 +22,17 @@ app.config(function($routeProvider) {
         templateUrl: "views/newinventory.html",
         controller: "newInventoryController"
     })
+    .when("/editinventory", {
+        templateUrl: "views/editinventory.html",
+        controller: "editInventoryController"
+    })
     .when("/deleteinventory", {
         templateUrl: "views/deleteinventory.html",
         controller: "deleteInventoryController"
+    })
+    .when("/addproduct", {
+        templateUrl: "views/addproduct.html",
+        controller: "addProductController"
     })
     .otherwise({
         templateUrl: "views/inventory.html",

@@ -22,7 +22,7 @@ app.controller('navigationController', function($scope, AuthenticationService, U
 // -------------------- //
 // Inventory Controller //
 // -------------------- //
-app.controller('inventoryController', function($scope, InventoryService, AuthenticationService, UIService) {
+app.controller('inventoryController', function($scope, $route, InventoryService, AuthenticationService, UIService) {
     if(AuthenticationService.isAuthenticated()) {
         $scope.empty = false;
         InventoryService.getInventories(function(data) {
@@ -33,6 +33,17 @@ app.controller('inventoryController', function($scope, InventoryService, Authent
 
             UIService.autoFocus();
         });
+
+        $scope.saveInventoryQuantities = function(inventory) {
+            InventoryService.saveInventoryQuantities(inventory, function(result) {
+                if(result.status) {
+                    $route.reload();
+                    UIService.refreshNavigationBar();
+                }
+
+                UIService.showMessage(result.message);
+            });
+        }
     } else {
         UIService.goTo("login");
     }
@@ -134,6 +145,33 @@ app.controller('newInventoryController', function($scope, AuthenticationService,
     }
 });
 
+// ------------------------ //
+// Edit Inventory Controller //
+// ------------------------ //
+app.controller('editInventoryController', function($scope, $routeParams, AuthenticationService, UIService, InventoryService) {
+    if(AuthenticationService.isAuthenticated()) {
+        InventoryService.getInventory($routeParams.id, function(result) {
+            $scope.inventory = result;
+            $scope.displayName = angular.copy(result.name);
+        });
+
+        $scope.editInventory = function() {
+            InventoryService.editInventory($scope.inventory, function(data) {
+                if(data.status) {
+                    UIService.goTo("inventory");
+                    UIService.refreshNavigationBar();
+                }
+
+                UIService.showMessage(data.message);
+            });
+        }
+
+        UIService.autoFocus();
+    } else {
+        UIService.goTo("login");
+    }
+});
+
 // --------------------------- //
 // Delete Inventory Controller //
 // --------------------------- //
@@ -141,6 +179,7 @@ app.controller('deleteInventoryController', function($scope, $routeParams, Authe
     if(AuthenticationService.isAuthenticated()) {
         InventoryService.getInventory($routeParams.id, function(result) {
             $scope.inventory = result;
+            $scope.displayName = angular.copy(result.name);
         });
 
         $scope.deleteInventory = function() {
@@ -152,6 +191,31 @@ app.controller('deleteInventoryController', function($scope, $routeParams, Authe
 
                 UIService.showMessage(result.message);
             });
+        }
+
+        UIService.autoFocus();
+    } else {
+        UIService.goTo("login");
+    }
+});
+
+// ---------------------- //
+// Add Product Controller //
+// ---------------------- //
+app.controller('addProductController', function($scope, $routeParams, AuthenticationService, UIService, InventoryService) {
+    if(AuthenticationService.isAuthenticated()) {
+        $scope.newProduct = {
+            name: "",
+            quantity: 1
+        }
+
+        InventoryService.getInventory($routeParams.id, function(result) {
+            $scope.inventory = result;
+            $scope.displayName = angular.copy(result.name);
+        });
+
+        $scope.add = function() {
+            UIService.showMessage("Not yet implemented");
         }
 
         UIService.autoFocus();

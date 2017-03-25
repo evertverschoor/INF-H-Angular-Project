@@ -53,6 +53,42 @@ app.service('InventoryService', function($http, AuthenticationService) {
     }
 
     /*
+        Edits an inventory.
+    */
+    this.editInventory = function(inventory, callback) {
+        $http({
+            method: 'POST',
+            url: '/editInventory?sessionID=' + AuthenticationService.getSessionID() + '&id=' + inventory.id + "&name=" + inventory.name,
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
+    }
+
+    /*
+        Edits the quantities of products in an inventory.
+    */
+    this.saveInventoryQuantities = function(inventory, callback) {
+        let sendableData = [];
+        for(var index in inventory.products) {
+            sendableData[sendableData.length] = {
+                id: inventory.products[index].id,
+                quantity: inventory.products[index].quantity
+            }
+        }
+
+        $http({
+            method: 'POST',
+            url: '/saveInventoryQuantities?sessionID=' + AuthenticationService.getSessionID() + '&inventoryID=' + inventory.id + "&quantities=" + JSON.stringify(sendableData),
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
+    }
+
+    /*
         Deletes an inventory.
     */
     this.deleteInventory = function(inventoryID, callback) {

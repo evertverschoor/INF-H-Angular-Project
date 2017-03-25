@@ -268,10 +268,105 @@ var Service = function() {
                             }
                         });
                     } else {
-                        callback({ status: false, data: "Old password is incorrect." });
+                        callback({ status: false, data: "No inventory found." });
                     }
                 } else {
                     callback({ status: false, data: "No inventories exist, cannot delete." });
+                }
+            });
+        } else {
+            callback({ status: false, data: "Not authenticated." });
+        }
+    }
+
+    /*
+        Edits an inventory with the given ID belonging to the current user.
+    */
+    this.editInventory = function(inventoryID, inventoryName, sessionID, callback) {
+        let session = privateService.getSession(sessionID);
+
+        if(session != null) {
+            this.getData("inventories", function(result) {
+                if(result != null && result.length > 0) {
+                    let match = false;
+
+                    for(var inv in result) {
+                        if(result[inv].userID == session.id && result[inv].id == inventoryID) {
+                            result[inv].name = inventoryName;
+                            match = true;
+                        }
+                    }
+
+                    if(match) {
+                        privateService.writeFile("inventories", JSON.stringify(result), function(writtenResult) {
+                            if(writtenResult) {
+                                callback({ status: true, data: "Inventory edited successfully." });
+                            } else {
+                                callback({ status: false, data: "Inventory editing failed, please try again later." });
+                            }
+                        });
+                    } else {
+                        callback({ status: false, data: "No inventory found." });
+                    }
+                } else {
+                    callback({ status: false, data: "No inventories exist, cannot edit." });
+                }
+            });
+        } else {
+            callback({ status: false, data: "Not authenticated." });
+        }
+    }
+
+    /*
+        Edits the quantities of the products in an inventory with the given ID belonging to the current user.
+    */
+    this.saveInventoryQuantities = function(inventoryID, quantities, sessionID, callback) {
+        let session = privateService.getSession(sessionID);
+        let productsToRemove = [];
+
+        if(session != null) {
+            this.getData("inventories", function(result) {
+                if(result != null && result.length > 0) {
+                    let match = false;
+                    
+                    // Iterator for inventories
+                    for(var inv in result) {
+                        if(result[inv].userID == session.id && result[inv].id == inventoryID) {
+
+                            // Iterator for products in this inventory
+                            for(var prod in result[inv].products) {
+                                
+                                // Iterator for products that could change their quantity
+                                for(var quan in quantities) {
+                                    if(result[inv].products[prod].id == quantities[quan].id) {
+                                        if(quantities[quan].quantity > 0) {
+                                            result[inv].products[prod].quantity = quantities[quan].quantity;
+                                        } else {
+                                            productsToRemove[productsToRemove.length] = {
+                                                inventoryIndex: inv,
+                                                productIndex: prod
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Remove any products that have quantity 0
+                    for(var toRemove in productsToRemove) {
+                        result[productsToRemove[toRemove].inventoryIndex].products.splice(productsToRemove[toRemove].productIndex, 1);
+                    }
+
+                    privateService.writeFile("inventories", JSON.stringify(result), function(writtenResult) {
+                        if(writtenResult) {
+                            callback({ status: true, data: "Quantities updated successfully." });
+                        } else {
+                            callback({ status: false, data: "Quantity updating failed, please try again later." });
+                        }
+                    });
+                } else {
+                    callback({ status: false, data: "No inventories exist, cannot edit." });
                 }
             });
         } else {

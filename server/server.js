@@ -16,7 +16,7 @@ var Inventory = function() {
         }
 
         try {
-            let params = this.getParams(request.url);
+            let params = this.getParams(decodeURIComponent(request.url));
             if(params == null) {
                 params = {};
             }

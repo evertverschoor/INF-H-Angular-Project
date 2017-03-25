@@ -83,8 +83,28 @@ module.exports =  {
         }
     },
 
+    editInventory: function(params, callback) {
+        service.editInventory(params.id, params.name, params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 500, data: result.data });
+            }
+        })
+    },
+
     deleteInventory: function(params, callback) {
         service.deleteInventory(params.inventoryID, params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 500, data: result.data });
+            }
+        })
+    },
+
+    saveInventoryQuantities: function(params, callback) {
+        service.saveInventoryQuantities(params.inventoryID, JSON.parse(params.quantities), params.sessionID, function(result) {
             if(result.status) {
                 callback({ statusCode: 200, data: result.data });
             } else {

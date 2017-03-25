@@ -17,8 +17,14 @@
         </tbody>
     </table>
 
-    <a href="#!addproduct">
+    <a data-ng-click="saveInventoryQuantities(inventory)">
+        <input type="button" class="button-alternative" value="Apply quantity changes"/>
+    </a>
+    <a href="#!addproduct?id={{inventory.id}}">
         <input type="button" class="button-alternative" value="Add product"/>
+    </a>
+    <a href="#!editinventory?id={{inventory.id}}">
+        <input type="button" class="button-alternative" value="Edit inventory"/>
     </a>
     <a href="#!deleteinventory?id={{inventory.id}}">
         <input type="button" class="button-alternative" value="Delete inventory"/>

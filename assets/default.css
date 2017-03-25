@@ -18,7 +18,7 @@ html, body {
     padding: 0px;
 }
 
-body, input {
+body, input, select {
     font-family: 'Raleway-Regular', Verdana, 'Segoe UI', Tahoma, Geneva, sans-serif;
     font-size: 16px;
 }
@@ -228,6 +228,10 @@ p {
     #AppContent .textInput {
         max-width: 288px;
         margin-left: calc(50% - 150px);
+    }
+
+    #AppContent select.textInput {
+        max-width: 300px;
     }
 
     .ngUtilsMessage {
