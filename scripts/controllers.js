@@ -139,16 +139,19 @@ app.controller('newInventoryController', function($scope, AuthenticationService,
 // --------------------------- //
 app.controller('deleteInventoryController', function($scope, $routeParams, AuthenticationService, UIService, InventoryService) {
     if(AuthenticationService.isAuthenticated()) {
-        $scope.inventory = InventoryService.getInventory($routeParams.id);
+        InventoryService.getInventory($routeParams.id, function(result) {
+            $scope.inventory = result;
+        });
 
         $scope.deleteInventory = function() {
-            let result = InventoryService.deleteInventory($scope.inventory.id);
-            if(result.status) {
-                UIService.goTo("inventory");
-                UIService.refreshNavigationBar();
-            }
+            InventoryService.deleteInventory($scope.inventory.id, function(result) {
+                if(result.status) {
+                    UIService.goTo("inventory");
+                    UIService.refreshNavigationBar();
+                }
 
-            UIService.showMessage(result.message);
+                UIService.showMessage(result.message);
+            });
         }
 
         UIService.autoFocus();
