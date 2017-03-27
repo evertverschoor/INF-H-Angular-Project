@@ -111,5 +111,15 @@ module.exports =  {
                 callback({ statusCode: 500, data: result.data });
             }
         })
+    },
+
+    getProducts: function(params, callback) {
+        service.getProducts(params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 500, data: result.data });
+            }
+        })
     }
 }

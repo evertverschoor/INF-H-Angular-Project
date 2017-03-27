@@ -58,6 +58,7 @@ p {
     width: 100%;
     height: 48px;
     background-color: #da1b16;
+    border-bottom: 1px solid #FFF;
 }
 
 #Logo {
@@ -86,6 +87,12 @@ p {
 #FooterGraphic {
     max-height: 64px;
     width: auto;
+}
+
+#ProductPictureCanvas, #ProductPictureVideo {
+    width: 100%;
+    height: auto;
+    background-color: #000;
 }
 
 .textInput, .button, .button-alternative {
@@ -232,6 +239,12 @@ p {
 
     #AppContent select.textInput {
         max-width: 300px;
+    }
+
+    #AppContent canvas, #AppContent video {
+        max-width: 300px;
+        margin-left: auto;
+        margin-left: calc(50% - 150px);
     }
 
     .ngUtilsMessage {

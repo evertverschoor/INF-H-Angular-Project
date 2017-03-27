@@ -103,6 +103,25 @@ app.service('InventoryService', function($http, AuthenticationService) {
     }
 });
 
+// --------------- //
+// Product Service //
+// --------------- //
+app.service('ProductService', function($http, AuthenticationService) {
+    /*
+        Returns all products the user has.
+    */
+    this.getProducts = function(callback) {
+        $http({
+            method: 'GET',
+            url: '/getProducts?sessionID=' + AuthenticationService.getSessionID(),
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
+    }
+});
+
 // ---------------------- //
 // Authentication Service //
 // ---------------------- //
@@ -270,5 +289,59 @@ app.service('UIService', function(AuthenticationService) {
         if(autofocusElement != null) {
             autofocusElement.focus();
         }
+    }
+});
+
+// -------------- //
+// Camera Service //
+// -------------- //
+app.service('CameraService', function() {
+    this.cameraInterval = 0;
+    this.data = {
+        video: 0,
+        canvas: 0,
+        context: 0,
+        width: 0,
+        height: 0
+    }
+
+    /*
+        Initializes the camera protocol on a page with the given element ID's.
+    */
+    this.initializeCamera = function(videoID, canvasID) {
+        let scope = this;
+
+        this.data.video = document.getElementById(videoID);
+        this.data.canvas = document.getElementById(canvasID);
+        this.data.context = this.data.canvas.getContext("2d");
+        
+        if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
+                scope.data.video.src = window.URL.createObjectURL(stream);
+                scope.data.video.play();
+
+                setTimeout(function() {
+                    scope.data.width = scope.data.video.offsetWidth;
+                    scope.data.height = scope.data.video.offsetHeight;
+
+                    scope.data.canvas.width = scope.data.width;
+                    scope.data.canvas.height = scope.data.height;
+
+                    scope.data.video.style.display = "none";
+                    scope.data.canvas.style.display = "block";
+                }, 500);
+
+                scope.cameraInterval = setInterval(function() {
+                    scope.data.context.drawImage(scope.data.video, 0, 0, scope.data.width, scope.data.height);
+                }, 32);
+            });
+        }
+    }
+
+    /*
+        Takes a picture with the currently set-up camera protocol.
+    */
+    this.takePicture = function() {
+        clearInterval(this.cameraInterval);
     }
 });

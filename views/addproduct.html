@@ -1,9 +1,11 @@
 <h1>Add known product to {{displayName}}</h1>
 <form data-ng-submit="addKnown()">
     <select class="textInput">
-        <option>Apple</option>
+        <option data-ng-repeat="product in products" value="{{product.id}}">
+            {{product.name}}
+        </option>
     </select>
-    <input type="number" class="textInput" data-ng-model="" placeholder="Quantity" min="0" data-ng-autofocus/>
+    <input type="number" class="textInput" data-ng-model="knownProduct.quantity" placeholder="Quantity" min="0" data-ng-autofocus/>
     <input type="submit" class="button" value="Add known"/>
 </form>
 
@@ -11,5 +13,8 @@
 <form data-ng-submit="addNew()">
     <input type="text" class="textInput" data-ng-model="newProduct.name" placeholder="Name" data-ng-autofocus/>
     <input type="number" class="textInput" data-ng-model="newProduct.quantity" placeholder="Quantity" min="0" data-ng-autofocus/>
+    <video id="ProductPictureVideo" autoplay></video>
+    <canvas id="ProductPictureCanvas" style="display: none;"></canvas>
+    <input type="button" class="button" value="Take picture" data-ng-click="takePicture()"/>
     <input type="submit" class="button" value="Add new"/>
 </form>

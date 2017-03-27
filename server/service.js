@@ -227,7 +227,7 @@ var Service = function() {
                     userID: session.id,
                     products: []
                 }
-
+                
                 privateService.writeFile("inventories", JSON.stringify(result), function(writtenResult) {
                     if(writtenResult) {
                         callback({ status: true, data: "Inventory created successfully." });
@@ -375,11 +375,40 @@ var Service = function() {
     }
 
     /*
+        Returns all the products belonging to the current user.
+    */
+    this.getProducts = function(sessionID, callback) {
+        let session = privateService.getSession(sessionID);
+
+        if(session != null) {
+            this.getData("products", function(result) {
+                let products = [];
+
+                if(result != null && result.length > 0) {
+                    for(var prod in result) {
+                        if(result[prod].userID == session.id) {
+                            products[products.length] = result[prod];
+                        }
+                    }
+                }
+                
+                callback({ status: true, data: products });
+            });
+        } else {
+            callback({ status: false, data: "Not authenticated." });
+        }
+    }
+
+    /*
         Passes a JSON object of the given data type to the callback. (e.g. 'users')
     */
     this.getData = function(which, callback) {
         privateService.readFile(which, function(data) {
-            callback(JSON.parse(data));
+            if(data == null) {
+                callback([]);
+            } else {
+                callback(JSON.parse(data));
+            }
         });
     }
 }

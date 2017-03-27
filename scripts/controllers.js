@@ -202,10 +202,14 @@ app.controller('deleteInventoryController', function($scope, $routeParams, Authe
 // ---------------------- //
 // Add Product Controller //
 // ---------------------- //
-app.controller('addProductController', function($scope, $routeParams, AuthenticationService, UIService, InventoryService) {
+app.controller('addProductController', function($scope, $routeParams, AuthenticationService, UIService, CameraService, InventoryService, ProductService) {
     if(AuthenticationService.isAuthenticated()) {
         $scope.newProduct = {
             name: "",
+            quantity: 1
+        }
+
+        $scope.knownProduct = {
             quantity: 1
         }
 
@@ -214,11 +218,32 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
             $scope.displayName = angular.copy(result.name);
         });
 
-        $scope.add = function() {
+        ProductService.getProducts(function(result) {
+            $scope.products = result.message;
+        })
+
+        $scope.addNew = function() {
             UIService.showMessage("Not yet implemented");
         }
 
+        $scope.addKnown = function() {
+            ProductService.addKnownProduct($scope.knownProduct.name, $scope.knownProduct.quantity, function(result) {
+                if(result.status) {
+                    UIService.goTo("inventory");
+                }
+
+                UIService.showMessage(result.message);
+            });
+        }
+
+        $scope.takePicture = function() {
+            CameraService.takePicture();
+            UIService.showMessage("Picture taken.");
+        }
+
         UIService.autoFocus();
+
+        CameraService.initializeCamera("ProductPictureVideo", "ProductPictureCanvas");
     } else {
         UIService.goTo("login");
     }
