@@ -30,8 +30,6 @@ app.controller('inventoryController', function($scope, $route, InventoryService,
             if($scope.inventories.length < 1)  {
                 $scope.empty = true;
             }
-
-            UIService.autoFocus();
         });
 
         $scope.saveInventoryQuantities = function(inventory) {
@@ -44,6 +42,8 @@ app.controller('inventoryController', function($scope, $route, InventoryService,
                 UIService.showMessage(result.message);
             });
         }
+
+        UIService.autoFocus();
     } else {
         UIService.goTo("login");
     }
@@ -220,6 +220,14 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
 
         ProductService.getProducts(function(result) {
             $scope.products = result.message;
+            
+            if($scope.products.length > 0) {
+                $scope.hasKnownProducts = true;
+                $scope.knownProductImage = $scope.products[0].image;
+            } else {
+                $scope.hasKnownProducts = false;
+                $scope.knownProductImage = "";
+            }
         })
 
         $scope.addNew = function() {
@@ -239,6 +247,10 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
         $scope.takePicture = function() {
             CameraService.takePicture();
             UIService.showMessage("Picture taken.");
+        }
+
+        $scope.setKnownProductImage = function(image) {
+            $scope.knownProductImage = image;
         }
 
         UIService.autoFocus();

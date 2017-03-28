@@ -1,1 +1,28 @@
-[{"name":"Home fridge","id":0,"userID":0,"products":[{"id":0,"name":"Apple","quantity":2,"image":"https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/220px-Red_Apple.jpg"}]},{"name":"Mini fridge","id":1,"userID":0,"products":[{"id":3,"name":"Banana","quantity":4,"image":"https://www.bbcgoodfood.com/sites/default/files/glossary/banana-crop.jpg"}]}]
+[
+	{
+		"name": "Home fridge",
+		"id": 0,
+		"userID": 0,
+		"products": [
+			{
+				"id": 0,
+				"quantity": 2
+			},
+			{
+				"id": 1,
+				"quantity": 5
+			}
+		]
+	},
+	{
+		"name": "Mini fridge",
+		"id": 1,
+		"userID": 0,
+		"products": [
+			{
+				"id": 2,
+				"quantity": 4
+			}
+		]
+	}
+]

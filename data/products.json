@@ -4,5 +4,17 @@
 		"userID":0,
 		"name": "Apple",
 		"image": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Red_Apple.jpg/220px-Red_Apple.jpg"
+	},
+	{
+		"id": 1,
+		"userID":0,
+		"name": "Pear",
+		"image": "http://usapears.org/wp-content/uploads/2015/01/green-anjou-pear.jpg"
+	},
+	{
+		"id": 2,
+		"userID":0,
+		"name": "Banana",
+		"image": "https://www.bbcgoodfood.com/sites/default/files/glossary/banana-crop.jpg"
 	}
 ]

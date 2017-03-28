@@ -193,20 +193,38 @@ var Service = function() {
     */
     this.getInventories = function(sessionID, callback) {
         let session = privateService.getSession(sessionID);
+        let scope = this;
 
         if(session != null) {
             this.getData("inventories", function(result) {
                 let inventories = [];
 
                 if(result != null && result.length > 0) {
-                    for(var inv in result) {
+                    for(let inv in result) {
                         if(result[inv].userID == session.id) {
                             inventories[inventories.length] = result[inv];
                         }
                     }
                 }
-                
-                callback({ status: true, data: inventories });
+
+                // Add the relevant product data (image, name)
+                scope.getProducts(sessionID, function(pResult) {
+                    let userProducts = pResult.data;
+
+                    for(let inv in inventories) {
+                        let invProducts = inventories[inv].products;
+                        for(let invProd in invProducts) {
+                            for(let prod in userProducts) {
+                                if(invProducts[invProd].id == userProducts[prod].id) {
+                                    inventories[inv].products[invProd].image = userProducts[prod].image;
+                                    inventories[inv].products[invProd].name = userProducts[prod].name;
+                                }
+                            }
+                        }
+                    }
+
+                    callback({ status: true, data: inventories });
+                });
             });
         } else {
             callback({ status: false, data: "Not authenticated." });
