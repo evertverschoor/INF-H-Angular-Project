@@ -358,4 +358,11 @@ app.service('CameraService', function() {
     this.takePicture = function() {
         clearInterval(this.cameraInterval);
     }
+
+    /*
+        Returns a JPEG if a picture has been taken already
+    */
+    this.getJPEG = function() {
+        return this.data.canvas.toDataURL('image/jpeg', 0.1);
+    }
 });

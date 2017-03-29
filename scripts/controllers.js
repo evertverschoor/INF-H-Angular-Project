@@ -235,6 +235,8 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
         })
 
         $scope.addNew = function() {
+            let imageData = CameraService.getJPEG();
+            console.log(imageData);
             UIService.showMessage("Not yet implemented");
         }
 
