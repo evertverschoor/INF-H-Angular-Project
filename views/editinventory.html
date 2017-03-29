@@ -1,4 +1,4 @@
-<h1>Edit {{displayName}}?</h1>
+<h1>Edit {{displayName | smallNameLimiter }}?</h1>
 <form data-ng-submit="editInventory()">
     <input type="text" class="textInput" data-ng-model="inventory.name" placeholder="Inventory name" id="InventoryName" data-ng-autofocus/>
     <input type="submit" class="button" value="Apply changes"/>

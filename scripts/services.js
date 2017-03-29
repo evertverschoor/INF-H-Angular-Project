@@ -216,9 +216,16 @@ app.service('AuthenticationService', function($http) {
     /*
         Logs out the currently authenticated user.
     */
-    this.unauthenticate = function(username, password) {
-        localStorage.setItem('SessionID', "");
-        return { status: true, message: "Logout successful." };
+    this.unauthenticate = function(callback) {
+        $http({
+            method: 'POST',
+            url: '/unauthenticate?sessionID=' + this.getSessionID(),
+        }).then(function(response) {
+            localStorage.setItem('SessionID', "");
+            callback({ status: true, message: "Logout successful." });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
     }
 
     /*

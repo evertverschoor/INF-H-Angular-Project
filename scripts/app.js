@@ -1,5 +1,8 @@
 var app = angular.module('inventory', ["ngRoute"]);
 
+/*
+    Route configuration
+*/
 app.config(function($routeProvider) {
     $routeProvider
     .when("/inventory", {
@@ -38,4 +41,19 @@ app.config(function($routeProvider) {
         templateUrl: "views/inventory.html",
         controller: "inventoryController"
     });
+});
+
+/*
+    Filter definitions
+*/
+app.filter('mediumNameLimiter', function () {
+    return function (item) {
+        return item.length > 22 ? item.substring(0, 22) + "..." : item;
+    };
+});
+
+app.filter('smallNameLimiter', function () {
+    return function (item) {
+        return item.length > 17 ? item.substring(0, 17) + "..." : item;
+    };
 });

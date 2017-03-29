@@ -100,12 +100,44 @@ var FileServer = function() {
         let encoding = null;
         let cleanRequest = this.getCleanURL(request.url);
 
+        let allowedDirectories = ["/assets", "/scripts", "/libs", "/views", "/data/images"];
+
         console.log("--------------------");
         console.log("Got request for file: " + cleanRequest);
         console.log("--------------------");
 
+        // "/" returns index.html
         if(cleanRequest == '/') {
             cleanRequest = "/index.html";
+        } 
+        
+        // "/favicon.ico" returns /assets/favicon.ico
+        else if(cleanRequest == '/favicon.ico') {
+            cleanRequest = "/assets/favicon.ico";
+        }
+        
+        // Not all directories are accessible, check the request URL
+        else {
+            if(cleanRequest.indexOf("../") > -1) {
+                response.statusCode = 403;
+                response.end("Use of '../' is not allowed.");
+                return;
+            } else {
+                let match = false;
+
+                for(let index in allowedDirectories) {
+                    if(cleanRequest.substring(0, allowedDirectories[index].length) == allowedDirectories[index]) {
+                        match = true;
+                        break;
+                    }
+                }
+
+                if(!match) {
+                    response.statusCode = 403;
+                    response.end("Not allowed ;)");
+                    return;
+                }
+            }
         }
 
         switch(this.getExtension(cleanRequest)) {

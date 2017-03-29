@@ -97,8 +97,16 @@ p {
     background-color: #000;
 }
 
-#KnownProductPreview {
+#ProductPreviewContainer {
     width: 100%;
+    text-align: center;
+}
+
+#KnownProductPreview {
+    max-width: 100%;
+    max-height: 360px;
+    width: auto;
+    height: auto;
 }
 
 .textInput, .button, .button-alternative {
@@ -253,7 +261,13 @@ select.textInput {
 
     #AppContent canvas, #AppContent video, #KnownProductPreview {
         max-width: 300px;
+        max-height: initial;
         margin-left: auto;
+        margin-left: calc(50% - 150px);
+    }
+
+    #ProductPreviewContainer {
+        max-width: 300px;
         margin-left: calc(50% - 150px);
     }
 

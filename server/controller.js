@@ -27,6 +27,16 @@ module.exports =  {
         }
     },
 
+    unauthenticate: function(params, callback) {
+        service.unauthenticate(params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 404, data: result.data });
+            }
+        });
+    },
+
     register: function(params, callback) {
         let scope = this;
 

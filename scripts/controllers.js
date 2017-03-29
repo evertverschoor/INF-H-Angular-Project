@@ -1,19 +1,20 @@
 // --------------------- //
 // Navigation Controller //
 // --------------------- //
-app.controller('navigationController', function($scope, AuthenticationService, UIService, AuthenticationService) {
+app.controller('navigationController', function($scope, AuthenticationService, UIService, CameraService, AuthenticationService) {
     /*
         Logs out the authenticated user.
     */
     $scope.logOut = function() {
-        let result = AuthenticationService.unauthenticate();
-        if(result.status) {
-            UIService.goTo("login");
-            UIService.refreshNavigationBar();
-        }
+        AuthenticationService.unauthenticate(function(result) {
+            if(result.status) {
+                UIService.goTo("login");
+                UIService.refreshNavigationBar();
+            }
 
-        CameraService.stop();
-        UIService.showMessage(result.message);
+            CameraService.stop();
+            UIService.showMessage(result.message);
+        });
     }
 
     AuthenticationService.validateSession();

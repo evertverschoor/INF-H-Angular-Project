@@ -17,6 +17,25 @@ var PrivateService = function() {
         return returnValue;
     }
 
+    this.clearSession = function(sessionID) {
+        let toSplice = -1,
+            sessions = this.session;
+
+        for(var ses in sessions) {
+            if(sessions[ses].sessionID == sessionID) {
+                toSplice = ses;
+                break;
+            }
+        }
+
+        if(toSplice > -1) {
+            this.session.splice(toSplice, 1);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     this.readFile = function(which, callback) {
         let path = this.goBackOneDir(__dirname) + "\\data\\" + which + ".json";
         fs.readFile(path, "utf8", function (error, data) {
@@ -103,6 +122,14 @@ var Service = function() {
                 callback({ status: false, data: "Credentials are not correct." });
             }
         });
+    }
+
+    /*
+        Unauthenticates the user with the given session ID.
+    */
+    this.unauthenticate = function(sessionID, callback) {
+        let result = privateService.clearSession(sessionID);
+        callback({ status: true, data: "OK" });
     }
 
     /*
