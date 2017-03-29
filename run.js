@@ -1,7 +1,8 @@
 var http = require('http');
 var server = require('./server/server.js');
 
-const port = 8000; 
+const port = 80;
+const hostname = null;
 
 http.createServer(function(request, response) {
     console.log("\n----------------");
@@ -21,6 +22,10 @@ http.createServer(function(request, response) {
             server.fileServer.handleRequest(request, response);
         }
     });
-}).listen(port, function(){
-    console.log("Inventory running on http://localhost:%s", port);
+}).listen(port, hostname, null, function(){
+    if(hostname == null) {
+        console.log("Inventory running on http://localhost:" + port);
+    } else {
+        console.log("Inventory running on http://" + hostname + ":" + port);
+    }
 });

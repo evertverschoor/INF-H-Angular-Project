@@ -95,6 +95,10 @@ p {
     background-color: #000;
 }
 
+#KnownProductPreview {
+    width: 100%;
+}
+
 .textInput, .button, .button-alternative {
     padding: 5px;
     width: calc(100% - 12px);
@@ -241,7 +245,7 @@ p {
         max-width: 300px;
     }
 
-    #AppContent canvas, #AppContent video {
+    #AppContent canvas, #AppContent video, #KnownProductPreview {
         max-width: 300px;
         margin-left: auto;
         margin-left: calc(50% - 150px);
