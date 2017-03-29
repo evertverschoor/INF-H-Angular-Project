@@ -458,7 +458,7 @@ var Service = function() {
                             if(!productMatch) {
                                 result[inv].products[result[inv].products.length] = {
                                     id: productID,
-                                    quantity: quantity
+                                    quantity: parseInt(quantity)
                                 }
                             }
 
@@ -497,7 +497,7 @@ var Service = function() {
         if(session != null) {
             // Save the image and retrieve the URL to it
             image = image.replace(/^data:image\/jpeg;base64,/, "");
-            let productID = new Date().getTime() + "_" + name,
+            let productID = new Date().getTime() + "_" + name.replace(/ /g,"_"),
                 imageURL = "data/images/" + productID + ".jpg";
 
             fs.writeFile(imageURL, image, 'base64', function(err) {

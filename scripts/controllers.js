@@ -27,6 +27,7 @@ app.controller('inventoryController', function($scope, $route, InventoryService,
         $scope.empty = false;
         InventoryService.getInventories(function(data) {
             $scope.inventories = data.message != "null" ? data.message : [];
+
             if($scope.inventories.length < 1)  {
                 $scope.empty = true;
             }

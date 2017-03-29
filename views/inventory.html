@@ -10,7 +10,7 @@
                 <td class="inventoryTableName">{{product.name}}</td>
                 <td class="inventoryTableQuantity">{{product.quantity}}</td>
                 <td  class="inventoryTableModifiers">
-                    <input type="button" class="productModifier" value="+" data-ng-click="product.quantity = product.quantity + 1" />
+                    <input type="button" class="productModifier" value="+" data-ng-click="product.quantity = product.quantity < 1000 ? product.quantity + 1 : product.quantity" />
                     <input type="button" class="productModifier" value="-" data-ng-click="product.quantity = product.quantity > 0 ? product.quantity - 1 : product.quantity" />
                 </td>
             </tr>
