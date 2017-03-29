@@ -209,10 +209,6 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
             quantity: 1
         }
 
-        $scope.knownProduct = {
-            quantity: 1
-        }
-
         InventoryService.getInventory($routeParams.id, function(result) {
             $scope.inventory = result;
             $scope.displayName = angular.copy(result.name);
@@ -224,9 +220,17 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
             if($scope.products.length > 0) {
                 $scope.hasKnownProducts = true;
                 $scope.knownProductImage = $scope.products[0].image;
+
+                $scope.knownProduct = {
+                    id: $scope.products[0].id,
+                    quantity: 1,
+                    image: $scope.products[0].image
+                }
             } else {
                 $scope.hasKnownProducts = false;
-                $scope.knownProductImage = "";
+                $scope.knownProduct = {
+                    image: ""
+                }
             }
         })
 
@@ -235,7 +239,8 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
         }
 
         $scope.addKnown = function() {
-            ProductService.addKnownProduct($scope.knownProduct.name, $scope.knownProduct.quantity, function(result) {
+
+            ProductService.addKnownProduct($scope.knownProduct.id, $scope.inventory.id, $scope.knownProduct.quantity, function(result) {
                 if(result.status) {
                     UIService.goTo("inventory");
                 }
@@ -249,8 +254,9 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
             UIService.showMessage("Picture taken.");
         }
 
-        $scope.setKnownProductImage = function(image) {
-            $scope.knownProductImage = image;
+        $scope.setKnownProduct = function(product) {
+            $scope.knownProduct.id = product.id;
+            $scope.knownProduct.image = product.image;
         }
 
         UIService.autoFocus();

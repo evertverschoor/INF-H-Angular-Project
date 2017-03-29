@@ -121,5 +121,15 @@ module.exports =  {
                 callback({ statusCode: 500, data: result.data });
             }
         })
+    },
+
+    addKnownProduct: function(params, callback) {
+        service.addKnownProduct(params.productID, params.inventoryID, params.quantity, params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 500, data: result.data });
+            }
+        });
     }
 }

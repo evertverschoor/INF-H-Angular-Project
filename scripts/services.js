@@ -120,6 +120,20 @@ app.service('ProductService', function($http, AuthenticationService) {
             callback({ status: false, message: response.data });
         });
     }
+
+    /*
+        Adds an existing product to an inventory.
+    */
+    this.addKnownProduct = function(productID, inventoryID, quantity, callback) {
+        $http({
+            method: 'POST',
+            url: '/addKnownProduct?sessionID=' + AuthenticationService.getSessionID() + '&productID=' + productID + '&inventoryID=' + inventoryID + '&quantity=' + quantity,
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
+    }
 });
 
 // ---------------------- //
