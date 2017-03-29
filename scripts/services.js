@@ -363,6 +363,6 @@ app.service('CameraService', function() {
         Returns a JPEG if a picture has been taken already
     */
     this.getJPEG = function() {
-        return this.data.canvas.toDataURL('image/jpeg', 0.1);
+        return this.data.canvas.toDataURL('image/jpeg', 0.5);
     }
 });
