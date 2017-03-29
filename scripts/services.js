@@ -134,6 +134,20 @@ app.service('ProductService', function($http, AuthenticationService) {
             callback({ status: false, message: response.data });
         });
     }
+
+    /*
+        Adds a new product to an inventory.
+    */
+    this.addNewProduct = function(name, quantity, image, inventoryID, callback) {
+        $http({
+            method: 'POST',
+            url: '/addNewProduct?sessionID=' + AuthenticationService.getSessionID() + '&name=' + name + '&quantity=' + quantity + '&inventoryID=' + inventoryID + '&image=' + image,
+        }).then(function(response) {
+            callback({ status: true, message: response.data });
+        }, function(response) {
+            callback({ status: false, message: response.data });
+        });
+    }
 });
 
 // ---------------------- //
@@ -309,7 +323,7 @@ app.service('UIService', function(AuthenticationService) {
 // -------------- //
 // Camera Service //
 // -------------- //
-app.service('CameraService', function() {
+app.service('CameraService', function(UIService) {
     this.cameraInterval = 0;
     this.data = {
         video: 0,
@@ -348,7 +362,11 @@ app.service('CameraService', function() {
                 scope.cameraInterval = setInterval(function() {
                     scope.data.context.drawImage(scope.data.video, 0, 0, scope.data.width, scope.data.height);
                 }, 32);
+            }).catch(function() {
+                UIService.showMessage("This device does not support HTML5 camera features.");
             });
+        } else {
+            UIService.showMessage("This browser does not support HTML5 camera features.");
         }
     }
 

@@ -131,5 +131,15 @@ module.exports =  {
                 callback({ statusCode: 500, data: result.data });
             }
         });
+    },
+
+    addNewProduct: function(params, callback) {
+        service.addNewProduct(params.name, params.quantity, params.inventoryID, params.image, params.sessionID, function(result) {
+            if(result.status) {
+                callback({ statusCode: 200, data: result.data });
+            } else {
+                callback({ statusCode: 500, data: result.data });
+            }
+        });
     }
 }

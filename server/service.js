@@ -488,6 +488,51 @@ var Service = function() {
     }
 
     /*
+        Adds a new product to a given inventory.
+    */
+    this.addNewProduct = function(name, quantity, inventoryID, image, sessionID, callback) {
+        let session = privateService.getSession(sessionID),
+            scope = this;
+
+        if(session != null) {
+            // Save the image and retrieve the URL to it
+            image = image.replace(/^data:image\/jpeg;base64,/, "");
+            let productID = new Date().getTime() + "_" + name,
+                imageURL = "data/images/" + productID + ".jpg";
+
+            fs.writeFile(imageURL, image, 'base64', function(err) {
+                if(err == null) {
+                    // Save the product with the image URL
+                    scope.getData("products", function(result) {
+                        result[result.length] = {
+                            id: productID,
+                            userID: session.id,
+                            name: name,
+                            image: imageURL
+                        }
+
+                        privateService.writeFile("products", JSON.stringify(result), function(writtenResult) {
+                            if(writtenResult && quantity < 1) {
+                                callback({ status: true, data: "Product added successfully." });
+                            } else if(writtenResult) {
+                                // If the quantity is > 1, use addKnownProduct to add it to the inventory
+                                scope.addKnownProduct(productID, inventoryID, quantity, sessionID, callback);
+                            } else {
+                                callback({ status: false, data: "Adding product failed, please try again later." });
+                            }
+                        });
+                    });
+                } else {
+                    console.log("Error saving the new product image, perhaps you need to create a directory 'data/images'?");
+                    callback({ status: false, data: "Failed to save your image, please try again later." });
+                }
+            });
+        } else {
+            callback({ status: false, data: "Not authenticated." });
+        }
+    }
+
+    /*
         Passes a JSON object of the given data type to the callback. (e.g. 'users')
     */
     this.getData = function(which, callback) {

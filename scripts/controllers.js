@@ -236,12 +236,18 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
 
         $scope.addNew = function() {
             let imageData = CameraService.getJPEG();
-            console.log(imageData);
-            UIService.showMessage("Not yet implemented");
+            if(imageData != null) {
+                ProductService.addNewProduct($scope.newProduct.name, $scope.newProduct.quantity, imageData, $scope.inventory.id, function(result) {
+                    if(result.status) {
+                        UIService.goTo("inventory");
+                    }
+
+                    UIService.showMessage(result.message);
+                });
+            }
         }
 
         $scope.addKnown = function() {
-
             ProductService.addKnownProduct($scope.knownProduct.id, $scope.inventory.id, $scope.knownProduct.quantity, function(result) {
                 if(result.status) {
                     UIService.goTo("inventory");
