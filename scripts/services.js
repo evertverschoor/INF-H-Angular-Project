@@ -329,6 +329,7 @@ app.service('CameraService', function(UIService) {
         video: 0,
         canvas: 0,
         context: 0,
+        stream: null,
         width: 0,
         height: 0
     }
@@ -336,7 +337,7 @@ app.service('CameraService', function(UIService) {
     /*
         Initializes the camera protocol on a page with the given element ID's.
     */
-    this.initializeCamera = function(videoID, canvasID) {
+    this.start = function(videoID, canvasID) {
         let scope = this;
 
         this.data.video = document.getElementById(videoID);
@@ -345,7 +346,8 @@ app.service('CameraService', function(UIService) {
         
         if(navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
             navigator.mediaDevices.getUserMedia({ video: true }).then(function(stream) {
-                scope.data.video.src = window.URL.createObjectURL(stream);
+                scope.data.stream = stream;
+                scope.data.video.src = window.URL.createObjectURL(scope.data.stream);
                 scope.data.video.play();
 
                 setTimeout(function() {
@@ -367,6 +369,16 @@ app.service('CameraService', function(UIService) {
             });
         } else {
             UIService.showMessage("This browser does not support HTML5 camera features.");
+        }
+    }
+
+    /*
+        Stops the ongoing camera stream if there is one.
+    */
+    this.stop = function() {
+        if(this.data.stream != null) {
+            this.data.stream.getTracks()[0].stop();
+            this.data.stream = null;
         }
     }
 

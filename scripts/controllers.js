@@ -12,6 +12,7 @@ app.controller('navigationController', function($scope, AuthenticationService, U
             UIService.refreshNavigationBar();
         }
 
+        CameraService.stop();
         UIService.showMessage(result.message);
     }
 
@@ -22,7 +23,7 @@ app.controller('navigationController', function($scope, AuthenticationService, U
 // -------------------- //
 // Inventory Controller //
 // -------------------- //
-app.controller('inventoryController', function($scope, $route, InventoryService, AuthenticationService, UIService) {
+app.controller('inventoryController', function($scope, $route, InventoryService, AuthenticationService, CameraService, UIService) {
     if(AuthenticationService.isAuthenticated()) {
         $scope.empty = false;
         InventoryService.getInventories(function(data) {
@@ -44,6 +45,7 @@ app.controller('inventoryController', function($scope, $route, InventoryService,
             });
         }
 
+        CameraService.stop();
         UIService.autoFocus();
     } else {
         UIService.goTo("login");
@@ -98,7 +100,7 @@ app.controller('registerController', function($scope, AuthenticationService, UIS
 // ------------------ //
 // Account Controller //
 // ------------------ //
-app.controller('accountController', function($scope, AuthenticationService, UIService, AccountService) {
+app.controller('accountController', function($scope, AuthenticationService, UIService, CameraService, AccountService) {
     if(AuthenticationService.isAuthenticated()) {
         $scope.oldPassword = "";
         $scope.newPassword = "";
@@ -116,6 +118,7 @@ app.controller('accountController', function($scope, AuthenticationService, UISe
             });
         }
 
+        CameraService.stop();
         UIService.autoFocus();
     } else {
         UIService.goTo("login");
@@ -244,6 +247,7 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
                     }
 
                     UIService.showMessage(result.message);
+                    CameraService.stop();
                 });
             }
         }
@@ -255,11 +259,13 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
                 }
 
                 UIService.showMessage(result.message);
+                CameraService.stop();
             });
         }
 
         $scope.takePicture = function() {
             CameraService.takePicture();
+            CameraService.stop();
             UIService.showMessage("Picture taken.");
         }
 
@@ -270,7 +276,7 @@ app.controller('addProductController', function($scope, $routeParams, Authentica
 
         UIService.autoFocus();
 
-        CameraService.initializeCamera("ProductPictureVideo", "ProductPictureCanvas");
+        CameraService.start("ProductPictureVideo", "ProductPictureCanvas");
     } else {
         UIService.goTo("login");
     }
