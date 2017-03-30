@@ -2,7 +2,7 @@ var http = require('http');
 var server = require('./server/server.js');
 
 const port = 80;
-const hostname = "10.0.1.4";
+const hostname = null;
 
 http.createServer(function(request, response) {
     console.log("\n----------------");
