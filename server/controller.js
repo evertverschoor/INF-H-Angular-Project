@@ -38,7 +38,7 @@ module.exports =  {
     },
 
     register: function(params, callback) {
-        let scope = this;
+        var scope = this;
 
         if(params.username.length < 5) {
             callback({ statusCode: 500, data: "Username must be at least 5 characters long." });

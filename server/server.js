@@ -9,19 +9,19 @@ var Inventory = function() {
         Handles action calls.
     */
     this.handleRequest = function(request, response, callback) {
-        let result = {
+        var result = {
             isAction: true,
             status: 200,
             response: ""
         }
 
         try {
-            let params = this.getParams(decodeURIComponent(request.url));
+            var params = this.getParams(decodeURIComponent(request.url));
             if(params == null) {
                 params = {};
             }
 
-            let action = this.getAction(request.url);
+            var action = this.getAction(request.url);
             controller[this.getAction(request.url)](params, function(controllerResult) {
                 if(typeof controllerResult.data == "string") {
                     result.response = controllerResult.data;
@@ -48,7 +48,7 @@ var Inventory = function() {
         Returns the action from a URL.
     */
     this.getAction = function(url) {
-        let action = url.substring(1, url.length);
+        var action = url.substring(1, url.length);
 
         if(action.indexOf('/') > -1) {
             action = action.substring(0, action.indexOf('/'));
@@ -70,14 +70,14 @@ var Inventory = function() {
     */
     this.getParams = function(url) {
         if(url.indexOf('?') > -1) {
-            let returnValue = {};
+            var returnValue = {};
 
             url = url.substring(url.indexOf('?') + 1, url.length);
-            let params = url.split('&');
+            var params = url.split('&');
 
             for(var param in params) {
                 if(params[param].indexOf('=') > -1) {
-                    let parts = params[param].split('=');
+                    var parts = params[param].split('=');
                     returnValue[parts[0]] = parts[1];
                 }
             }
@@ -97,10 +97,10 @@ var FileServer = function() {
         Handles requests for files.
     */
     this.handleRequest = function(request, response) {
-        let encoding = null;
-        let cleanRequest = this.getCleanURL(request.url);
+        var encoding = null;
+        var cleanRequest = this.getCleanURL(request.url);
 
-        let allowedDirectories = ["/assets", "/scripts", "/libs", "/views", "/data/images"];
+        var allowedDirectories = ["/assets", "/scripts", "/libs", "/views", "/data/images"];
 
         console.log("--------------------");
         console.log("Got request for file: " + cleanRequest);
@@ -123,9 +123,9 @@ var FileServer = function() {
                 response.end("Use of '../' is not allowed.");
                 return;
             } else {
-                let match = false;
+                var match = false;
 
-                for(let index in allowedDirectories) {
+                for(var index in allowedDirectories) {
                     if(cleanRequest.substring(0, allowedDirectories[index].length) == allowedDirectories[index]) {
                         match = true;
                         break;
@@ -149,7 +149,7 @@ var FileServer = function() {
                 break;
         }
 
-        let path = this.goBackOneDir(__dirname) + cleanRequest;
+        var path = this.goBackOneDir(__dirname) + cleanRequest;
         fs.readFile(path, encoding, function (error, data) {
             if (error) {
                 console.log(error);
@@ -173,7 +173,7 @@ var FileServer = function() {
         Returns a file extension from a given string, if there is one.
     */
     this.getExtension = function(url) {
-        let fileExtension = url.split('.');
+        var fileExtension = url.split('.');
         fileExtension = fileExtension[fileExtension.length - 1];
 
         if(fileExtension.indexOf('/') > -1) {
@@ -187,7 +187,7 @@ var FileServer = function() {
         Returns a clean version of an URL that can be used for file reading.
     */
     this.getCleanURL = function(url) {
-        let cleanUrl = url;
+        var cleanUrl = url;
 
         if(cleanUrl.indexOf('#') > -1) {
             cleanUrl = url.substring(0, url.lastIndexOf('#'));

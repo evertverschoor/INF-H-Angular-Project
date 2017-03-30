@@ -4,8 +4,8 @@ var PrivateService = function() {
     this.session = [];
 
     this.getSession = function(sessionID) {
-        let sessions = this.session;
-        let returnValue = null;
+        var sessions = this.session;
+        var returnValue = null;
 
         for(var ses in sessions) {
             if(sessions[ses].sessionID == sessionID) {
@@ -18,7 +18,7 @@ var PrivateService = function() {
     }
 
     this.clearSession = function(sessionID) {
-        let toSplice = -1,
+        var toSplice = -1,
             sessions = this.session;
 
         for(var ses in sessions) {
@@ -37,7 +37,7 @@ var PrivateService = function() {
     }
 
     this.readFile = function(which, callback) {
-        let path = this.goBackOneDir(__dirname) + "\\data\\" + which + ".json";
+        var path = this.goBackOneDir(__dirname) + "\\data\\" + which + ".json";
         fs.readFile(path, "utf8", function (error, data) {
             if (error) {
                 callback(null);
@@ -48,7 +48,7 @@ var PrivateService = function() {
     }
 
     this.writeFile = function(which, text, callback) {
-        let path = this.goBackOneDir(__dirname) + "\\data\\" + which + ".json";
+        var path = this.goBackOneDir(__dirname) + "\\data\\" + which + ".json";
         fs.writeFile(path, text, function (error) {
             if (error) {
                 callback(false);
@@ -73,7 +73,7 @@ var Service = function() {
         Make sure the front-end and back-end sessions are still valid.
     */
     this.validateSession = function(sessionID, callback) {
-        let session = privateService.getSession(sessionID);
+        var session = privateService.getSession(sessionID);
 
         if(session == null) {
             callback({ status: false, data: null });
@@ -90,8 +90,8 @@ var Service = function() {
 
             // If at least 1 user exists
             if(data != null && data.length > 0) {
-                let match = false;
-                let id = -1;
+                var match = false;
+                var id = -1;
 
                 // For each existing user
                 for(var user in data) {
@@ -106,7 +106,7 @@ var Service = function() {
 
                 // If we found a match, authenticate
                 if(match) {
-                    let sessionID = privateService.session.length + 1;
+                    var sessionID = privateService.session.length + 1;
 
                     privateService.session[privateService.session.length] = {
                         username: username,
@@ -128,7 +128,7 @@ var Service = function() {
         Unauthenticates the user with the given session ID.
     */
     this.unauthenticate = function(sessionID, callback) {
-        let result = privateService.clearSession(sessionID);
+        var result = privateService.clearSession(sessionID);
         callback({ status: true, data: "OK" });
     }
 
@@ -136,12 +136,12 @@ var Service = function() {
         Register a new user with a username and password.
     */
     this.addUser = function(username, password, callback) {
-        let scope = this;
+        var scope = this;
 
         this.getData("users", function(data) {
             if(data != null && data.length > 0) {
-                let match = false;
-                let highestID = 0;
+                var match = false;
+                var highestID = 0;
 
                 for(var user in data) {
                     highestID = user.id;
@@ -185,15 +185,15 @@ var Service = function() {
         Changes a user's password.
     */
     this.changePassword = function(oldPassword, newPassword, sessionID, callback) {
-        let scope = this;
+        var scope = this;
 
         this.getData("users", function(data) {
             if(data != null && data.length > 0) {
-                let match = false;
-                let session = privateService.getSession(sessionID);
+                var match = false;
+                var session = privateService.getSession(sessionID);
 
                 if(session != null) {
-                    let userID = session.id;
+                    var userID = session.id;
 
                     for(var user in data) {
                         if(data[user].id == userID && data[user].password == oldPassword) {
@@ -228,15 +228,15 @@ var Service = function() {
         Returns all the inventories belonging to the current user.
     */
     this.getInventories = function(sessionID, callback) {
-        let session = privateService.getSession(sessionID);
-        let scope = this;
+        var session = privateService.getSession(sessionID);
+        var scope = this;
 
         if(session != null) {
             this.getData("inventories", function(result) {
-                let inventories = [];
+                var inventories = [];
 
                 if(result != null && result.length > 0) {
-                    for(let inv in result) {
+                    for(var inv in result) {
                         if(result[inv].userID == session.id) {
                             inventories[inventories.length] = result[inv];
                         }
@@ -245,12 +245,12 @@ var Service = function() {
 
                 // Add the relevant product data (image, name)
                 scope.getProducts(sessionID, function(pResult) {
-                    let userProducts = pResult.data;
+                    var userProducts = pResult.data;
 
-                    for(let inv in inventories) {
-                        let invProducts = inventories[inv].products;
-                        for(let invProd in invProducts) {
-                            for(let prod in userProducts) {
+                    for(var inv in inventories) {
+                        var invProducts = inventories[inv].products;
+                        for(var invProd in invProducts) {
+                            for(var prod in userProducts) {
                                 if(invProducts[invProd].id == userProducts[prod].id) {
                                     inventories[inv].products[invProd].image = userProducts[prod].image;
                                     inventories[inv].products[invProd].name = userProducts[prod].name;
@@ -271,7 +271,7 @@ var Service = function() {
         Add an inventory with a name and a user's session ID.
     */
     this.addInventory = function(name, sessionID, callback) {
-        let session = privateService.getSession(sessionID);
+        var session = privateService.getSession(sessionID);
 
         if(session != null) {
             this.getData("inventories", function(result) {
@@ -299,12 +299,12 @@ var Service = function() {
         Deletes an inventory with the given ID belonging to the current user.
     */
     this.deleteInventory = function(inventoryID, sessionID, callback) {
-        let session = privateService.getSession(sessionID);
+        var session = privateService.getSession(sessionID);
 
         if(session != null) {
             this.getData("inventories", function(result) {
                 if(result != null && result.length > 0) {
-                    let match = false;
+                    var match = false;
 
                     for(var inv in result) {
                         if(result[inv].userID == session.id && result[inv].id == inventoryID) {
@@ -337,12 +337,12 @@ var Service = function() {
         Edits an inventory with the given ID belonging to the current user.
     */
     this.editInventory = function(inventoryID, inventoryName, sessionID, callback) {
-        let session = privateService.getSession(sessionID);
+        var session = privateService.getSession(sessionID);
 
         if(session != null) {
             this.getData("inventories", function(result) {
                 if(result != null && result.length > 0) {
-                    let match = false;
+                    var match = false;
 
                     for(var inv in result) {
                         if(result[inv].userID == session.id && result[inv].id == inventoryID) {
@@ -375,13 +375,13 @@ var Service = function() {
         Edits the quantities of the products in an inventory with the given ID belonging to the current user.
     */
     this.saveInventoryQuantities = function(inventoryID, quantities, sessionID, callback) {
-        let session = privateService.getSession(sessionID);
-        let productsToRemove = [];
+        var session = privateService.getSession(sessionID);
+        var productsToRemove = [];
 
         if(session != null) {
             this.getData("inventories", function(result) {
                 if(result != null && result.length > 0) {
-                    let match = false;
+                    var match = false;
                     
                     // Iterator for inventories
                     for(var inv in result) {
@@ -432,11 +432,11 @@ var Service = function() {
         Returns all the products belonging to the current user.
     */
     this.getProducts = function(sessionID, callback) {
-        let session = privateService.getSession(sessionID);
+        var session = privateService.getSession(sessionID);
 
         if(session != null) {
             this.getData("products", function(result) {
-                let products = [];
+                var products = [];
 
                 if(result != null && result.length > 0) {
                     for(var prod in result) {
@@ -457,7 +457,7 @@ var Service = function() {
         Adds a known product to a given inventory.
     */
     this.addKnownProduct = function(productID, inventoryID, quantity, sessionID, callback) {
-        let session = privateService.getSession(sessionID);
+        var session = privateService.getSession(sessionID);
 
         if(quantity < 1) {
             callback({ status: true, data: "No products were added." });
@@ -467,13 +467,13 @@ var Service = function() {
         if(session != null) {
             this.getData("inventories", function(result) {
                 if(result != null && result.length > 0) {
-                    let match = false;
+                    var match = false;
 
                     for(var inv in result) {
                         if(result[inv].userID == session.id && result[inv].id == inventoryID) {
-                            let products = result[inv].products;
+                            var products = result[inv].products;
 
-                            let productMatch = false;
+                            var productMatch = false;
                             for(var prod in products) {
                                 if(products[prod].id == productID) {
                                     result[inv].products[prod].quantity = parseInt(result[inv].products[prod].quantity) + parseInt(quantity);
@@ -518,13 +518,13 @@ var Service = function() {
         Adds a new product to a given inventory.
     */
     this.addNewProduct = function(name, quantity, inventoryID, image, sessionID, callback) {
-        let session = privateService.getSession(sessionID),
+        var session = privateService.getSession(sessionID),
             scope = this;
 
         if(session != null) {
             // Save the image and retrieve the URL to it
             image = image.replace(/^data:image\/jpeg;base64,/, "");
-            let productID = new Date().getTime() + "_" + name.replace(/ /g,"_"),
+            var productID = new Date().getTime() + "_" + name.replace(/ /g,"_"),
                 imageURL = "data/images/" + productID + ".jpg";
 
             fs.writeFile(imageURL, image, 'base64', function(err) {
